@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>d</string>
+		<string>dtrace</string>
+	</array>
+	<key>firstLineMatch</key>
+	<string>-[*]-( Mode:)? C -[*]-</string>
+	<key>keyEquivalent</key>
+	<string>^~@d</string>
+	<key>name</key>
+	<string>DTrace</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>match</key>
+			<string>\b(return|\$target|BEGIN|END|begin|end|entry|option|flowindent|quiet|self|ustack|pragma|trace|provider|probe|this)\b</string>
+			<key>name</key>
+			<string>keyword.control.dtrace</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\b(char|short|int|long|long long|int8_t|int16_t|int32_t|int64_t|intptr_t|uint8_t|uint16_t|uint32_t|uint64_t|uintptr_t|float|double|long double)\b</string>
+			<key>name</key>
+			<string>storage.type.dtrace</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>name</key>
+			<string>string.quoted.double.dtrace</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\\.</string>
+					<key>name</key>
+					<string>constant.character.escape.dtrace</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>//</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.comment.dtrace</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>$\n?</string>
+					<key>name</key>
+					<string>comment.line.double-slash.dtrace</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>(?&gt;\\\s*\n)</string>
+							<key>name</key>
+							<string>punctuation.separator.continuation.dtrace</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.dtrace</string>
+	<key>uuid</key>
+	<string>DF242A2B-B035-4797-B4CA-DF9B011A2146</string>
+</dict>
+</plist>

@@ -1,0 +1,26 @@
+{
+    "name": "dtrace",
+    "displayName": "DTrace",
+    "description": "DTrace support",
+    "version": "0.0.1",
+    "publisher": "FilipKrikava",
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "dscript",
+            "aliases": ["D script", "dscript"],
+            "extensions": [".d",".dtrace"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "dscript",
+            "scopeName": "source.dtrace",
+            "path": "./syntaxes/dscript.tmLanguage"
+        }]
+    }
+}
