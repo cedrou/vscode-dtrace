@@ -1,21 +1,21 @@
 {
     "name": "dtrace",
     "displayName": "DTrace",
-    "description": "DTrace support",
-    "version": "0.1.0",
-    "publisher": "fikovnik",
+    "description": "DTrace language extension for VSCode",
+    "version": "0.2.0",
+    "publisher": "cedrou",
     "repository": {
         "type": "git",
-        "url": "https://github.com/fikovnik/vscode-dtrace.git"
+        "url": "https://github.com/cedrou/vscode-dtrace.git"
     },
     "bugs": {
-        "url": "https://github.com/fikovnik/vscode-dtrace"
+        "url": "https://github.com/cedrou/vscode-dtrace"
     },
     "engines": {
         "vscode": "^1.5.0"
     },
     "categories": [
-        "Languages"
+        "Programming Languages"
     ],
     "contributes": {
         "languages": [
@@ -36,7 +36,7 @@
             {
                 "language": "dscript",
                 "scopeName": "source.dtrace",
-                "path": "./syntaxes/dscript.tmLanguage"
+                "path": "./syntaxes/dscript.tmLanguage.json"
             }
         ]
     }

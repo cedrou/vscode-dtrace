@@ -1,0 +1,342 @@
+{
+  "name": "DTrace script",
+  "scopeName": "source.dtrace",
+
+  "patterns": [
+    { 
+      "include": "#comments"
+    },
+
+    { 
+      "include": "#preprocessor"
+    },
+
+    {
+      "include": "#strings"
+    },
+
+
+    {
+      "include": "#probe-definition"
+    }
+
+  ],
+  
+  "repository": {
+
+    "comments": {
+			"patterns": [
+        {
+          "name": "comment.block.dtrace",
+
+					"begin": "/\\*",
+          "beginCaptures": { "0": { "name": "punctuation.definition.comment.begin.dtrace" } },
+          
+					"end": "\\*/",
+					"endCaptures": { "0": { "name": "punctuation.definition.comment.end.dtrace" } }
+        },
+        
+        {
+          "name": "comment.line.shebang.dtrace",
+          "match": "^\\s*#!.*$"
+        }
+			]
+    },
+    
+    "strings": {
+			"patterns": [
+				{
+          "name": "string.quoted.double.dtrace",
+          
+					"begin": "\"",
+					"beginCaptures": { "0": { "name": "punctuation.definition.string.begin.dtrace" } },
+          
+          "end": "\"",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.dtrace" } },
+          
+					"patterns": [
+						{
+							"include": "#string_escaped_char"
+						},
+						{
+							"include": "#string_placeholder"
+						}
+					]
+				},
+				{
+					"name": "string.quoted.single.dtrace",
+          
+          "begin": "'",
+					"beginCaptures": { "0": { "name": "punctuation.definition.string.begin.dtrace" } },
+           
+          "end": "'",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.dtrace" } },
+          
+					"patterns": [
+						{
+							"include": "#string_escaped_char"
+						}
+					]
+				}
+			]
+    },
+    
+		"string_escaped_char": {
+			"patterns": [
+				{
+					"match": "(?x)\\\\ (\n\\\\\t\t\t |\n[abefnprtv'\"?]   |\n[0-3]\\d{,2}\t |\n[4-7]\\d?\t\t|\nx[a-fA-F0-9]{,2} |\nu[a-fA-F0-9]{,4} |\nU[a-fA-F0-9]{,8} )",
+					"name": "constant.character.escape.dtrace"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unknown-escape.dtrace"
+				}
+			]
+    },
+
+    "string_placeholder": {
+			"patterns": [
+				{
+					"match": "(?x) %\n(\\d+\\$)?\t\t\t\t\t\t   # field (argument #)\n[#0\\- +']*\t\t\t\t\t\t  # flags\n[,;:_]?\t\t\t\t\t\t\t  # separator character (AltiVec)\n((-?\\d+)|\\*(-?\\d+\\$)?)?\t\t  # minimum field width\n(\\.((-?\\d+)|\\*(-?\\d+\\$)?)?)?\t# precision\n(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier\n[diouxXDOUeEfFgGaACcSspn%]\t\t   # conversion type",
+					"name": "constant.other.placeholder.dtrace"
+				},
+				{
+					"match": "(%)(?!\"\\s*(PRI|SCN))",
+					"captures": {
+						"1": {
+							"name": "invalid.illegal.placeholder.dtrace"
+						}
+					}
+				}
+			]
+    },
+    
+    "aggregation": {
+      "patterns": [
+        {
+          "name": "variable.other.agg.dtrace",
+          "match": "@[A-Za-z_]+"
+        }
+      ]
+    },
+
+    "probe-spec": {
+      "patterns": [
+        {
+          "name": "variable.other.pspec.dtrace",
+          "match": "[-$:a-zA-Z_.?*\\\\\\[\\]!][-$:0-9a-zA-Z_.`?*\\\\\\[\\]!]*"
+        }
+      ]
+    },
+
+    "identifier": {
+      "patterns": [
+        {
+          "name": "variable.other.ident.dtrace",
+          "match": "[a-zA-Z_`][0-9a-zA-Z_`]*"
+        }
+      ]
+    },
+
+    "integer": {
+      "patterns": [
+        {
+          "name": "constant.numeric.dtrace",
+          "match": "([0-9]+|0[xX][0-9A-Fa-f]+)[uU]?[lL]?[lL]?"
+        }
+      ]
+    },
+
+    "float": {
+      "patterns": [
+        {
+          "name": "constant.numeric.dtrace",
+          "match": "([0-9]+(\\.?)[0-9]*|\\.[0-9]+)((e|E)(\\+|-)?[0-9]+)?[fFlL]?"
+        }
+      ]
+    },
+
+    "constant": {
+      "patterns": [
+        { "include": "#integer" },
+        { "include": "#float" }
+      ]
+    },
+
+    "probe-definition": {
+      "name":"meta.function.probe.dtrace",
+
+      "begin": "\\s*(([A-Za-z_][-A-Za-z0-9_]*)?:([A-Za-z_][-A-Za-z0-9_]*)?:([A-Za-z_][-A-Za-z0-9_]*)?:([A-Za-z_][-A-Za-z0-9_]*)?)",
+      "beginCaptures": { "1": { "name":"entity.name.type.probe.cs" } },
+      
+      "end":"}",
+      "endCaptures": { "0": { "name":"punctuation.section.function.end.probe.cs" } },
+      
+      "patterns": [
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#aggregation"
+        },
+        {
+          "include": "#identifier"
+        },
+        {
+          "include": "#constant"
+        },
+        {
+          "include": "#operators"
+        }
+      ]
+    },
+
+    "preprocessor": {
+      "patterns": [
+        { 
+          "name": "keyword.control.preprocessor.dtrace",
+          "match": "^\\s*(#)(pragma|include)\\b"
+        }
+      ]
+    },
+
+    "keywords": {
+      "patterns": [
+        { 
+          "name": "storage.type.intrinsic.dtrace",
+          "match": "\\b(void|((un)?signed\\s+)?(char|short|int|long(\\s+long)?)|(un)?signed|_Bool|float|double|long double|float imaginary|double imaginary|long double imaginary|float complex|double complex|long double complex|string|<DYN>|stack|_symaddr|_usymaddr)\\b"
+        },
+        { 
+          "name": "storage.type.typedef.dtrace",
+          "match": "\\b(u?int8_t|u?int16_t|u?int32_t|u?int64_t|u?intptr_t|s?size_t|uchar_t|ushort_t|uint_t|ulong_t|ulonglong_t|ptrdiff_t|id_t|pid_t)\\b"
+        },
+        { 
+          "name": "storage.type.typedef.dtrace",
+          "match": "\\b(u?int8_t|u?int16_t|u?int32_t|u?int64_t|u?intptr_t|s?size_t|uchar_t|ushort_t|uint_t|ulong_t|ulonglong_t|ptrdiff_t|id_t|pid_t)\\b"
+        },
+        { 
+          "name": "storage.modifier.dtrace",
+          "match": "\\b(const|volatile|typedef|register|restrict|static|extern|inline)\\b"
+        },
+    
+        {
+          "name": "variable.language.scalar.dtrace",
+          "match": "\\b(arg[0-9]|caller|cpu|curthread|epid|errno|execargs|execname|gid|id|irql|ipl|jailname|jid|pid|ppid|probefunc|probemod|probename|probeprov|stackdepth|tid|timestamp|ucaller|uid|ustackdepth|vtimestamp|walltimestamp|zonename)\\b"
+        },
+        {
+          "name": "variable.language.array.dtrace",
+          "match": "\\b(args|uregs)\\b"
+        },
+        {
+          "name": "variable.language.pointer.dtrace",
+          "match": "\\b(self|this)->"
+        },
+
+    
+        {
+          "name": "support.function.aggregated.dtrace",
+          "match": "\\b(avg|count|llquantize|lquantize|max|min|quantize|sum)\\s*\\("
+        },
+        {
+          "name": "support.function.other.dtrace",
+          "match": "\\b(alloca|basename|bcopy|cleanpath|copyin(str|to)?|copyout(str)?|ddi_pathname|dirname|get(major|minor|f)|hton(l|ll|s)|index|inet_nto(a|a6|p)|json|lltostr|mem(ref|str)|msg(d)?size|mutex_(owned|owner|type_(adaptative|spin))|ntoh(l|ll|s)|progenyof|rand|rindex|rw_(iswriter|read_held|write_held)|speculation|str(chr|len|join|rchr|str|tok|toll)|substr|sx_(isexclusive|shared_held|exclusive_held)|to(lower|upper)|)\\s*\\("
+        },
+        {
+          "name": "support.function.action.dtrace",
+          "match": "\\b(breakpoint|chill|cleanpath|clear|commit|(de)?normalize|discard|exit|freopen|ftruncate|(u)?func|(j|u)?stack|(u)?mod|panic|print(a|f|m)?|raise|setopt|speculate|stop|(u)?sym|system|trace(mem)?|trunc|uaddr)\\s*\\("
+        },
+
+        {
+          "name": "support.variable.macros.dtrace",
+          "match": "\\$([0-9]|egid|euid|gid|pid|pgid|ppid|projid|sid|target|taskid|uid)\\b"
+        }    
+      ]
+    },
+
+    "operators": {
+      "patterns": [
+        {
+					"match": "--",
+					"name": "keyword.operator.decrement.c"
+				},
+				{
+					"match": "\\+\\+",
+					"name": "keyword.operator.increment.c"
+        },
+        {
+          "match": "%=|\\+=|-=|\\*=|/=",
+          "name": "keyword.operator.assignment.compound.dtrace"
+        },
+        {
+          "match": "&=|\\^=|<<=|>>=|\\|=",
+          "name": "keyword.operator.assignment.compound.bitwise.dtrace"
+        },
+        {
+          "match": "<<|>>",
+          "name": "keyword.operator.bitwise.shift.dtrace"
+        },
+        {
+          "match": "!=|<=|>=|==|<|>",
+          "name": "keyword.operator.comparison.dtrace"
+        },
+        {
+          "match": "&&|\\|\\||\\^\\^|!",
+          "name": "keyword.operator.logical.dtrace"
+        },
+        {
+          "match": "&|\\||\\^|~",
+          "name": "keyword.operator.bitwise.dtrace"
+        },
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.dtrace"
+        },
+        {
+					"match": "%|\\*|/|-|\\+",
+					"name": "keyword.operator.arithmetic.dtrace"
+				},
+				{
+					"begin": "\\?",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.ternary.c"
+						}
+					},
+					"end": ":",
+					"applyEndPatternLast": true,
+					"endCaptures": {
+						"0": {
+							"name": "keyword.operator.ternary.c"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				}
+      ]
+    },
+
+    "expression": {
+      "patterns": [
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#aggregation"
+        },
+        {
+          "include": "#identifier"
+        },
+        {
+          "include": "#constant"
+        },
+        {
+          "include": "#operators"
+        }
+      ]
+    }
+
+  }
+}
